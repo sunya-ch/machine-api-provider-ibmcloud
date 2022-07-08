@@ -21,10 +21,10 @@ import (
 	"fmt"
 
 	machinev1 "github.com/openshift/api/machine/v1beta1"
-	ibmclient "github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/client"
-	"github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/util"
-	ibmcloudproviderv1 "github.com/openshift/cluster-api-provider-ibmcloud/pkg/apis/ibmcloudprovider/v1"
 	machineapierrors "github.com/openshift/machine-api-operator/pkg/controller/machine"
+	ibmclient "github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/client"
+	"github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/util"
+	ibmcloudproviderv1 "github.com/openshift/machine-api-provider-ibmcloud/pkg/apis/ibmcloudprovider/v1"
 	"k8s.io/apimachinery/pkg/api/equality"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	klog "k8s.io/klog/v2"

@@ -1,4 +1,4 @@
-# OpenShift cluster-api-provider-ibmcloud
+# OpenShift machine-api-provider-ibmcloud
 
 This repository hosts an implementation of a provider for IBM Cloud for the
 OpenShift [machine-api](https://github.com/openshift/cluster-api).

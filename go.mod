@@ -1,4 +1,4 @@
-module github.com/openshift/cluster-api-provider-ibmcloud
+module github.com/openshift/machine-api-provider-ibmcloud
 
 go 1.18
 

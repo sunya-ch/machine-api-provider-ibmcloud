@@ -21,7 +21,7 @@ GOARCH  ?= $(shell go env GOARCH)
 GOOS    ?= $(shell go env GOOS)
 
 VERSION     ?= $(shell git describe --always --abbrev=7)
-REPO_PATH   ?= github.com/openshift/cluster-api-provider-ibmcloud
+REPO_PATH   ?= github.com/openshift/machine-api-provider-ibmcloud
 LD_FLAGS    ?= -X $(REPO_PATH)/pkg/version.Raw=$(VERSION) -extldflags "-static"
 IMAGE        = origin-ibmcloud-machine-controllers
 MUTABLE_TAG ?= latest
@@ -37,7 +37,7 @@ ifeq ($(NO_DOCKER), 1)
   IMAGE_BUILD_CMD = imagebuilder
   export CGO_ENABLED
 else
-  DOCKER_CMD = docker run --rm -e CGO_ENABLED=$(CGO_ENABLED) -e GOARCH=$(GOARCH) -e GOOS=$(GOOS) -v "$(PWD)":/go/src/github.com/openshift/cluster-api-provider-ibmcloud:Z -w /go/src/github.com/openshift/cluster-api-provider-ibmcloud $(BUILD_IMAGE)
+  DOCKER_CMD = docker run --rm -e CGO_ENABLED=$(CGO_ENABLED) -e GOARCH=$(GOARCH) -e GOOS=$(GOOS) -v "$(PWD)":/go/src/github.com/openshift/machine-api-provider-ibmcloud:Z -w /go/src/github.com/openshift/machine-api-provider-ibmcloud $(BUILD_IMAGE)
   IMAGE_BUILD_CMD = docker build
 endif
 
@@ -63,7 +63,7 @@ fmt: ## Go fmt your code
 
 .PHONY: lint
 lint: ## Go lint your code
-	$(DOCKER_CMD) hack/go-lint.sh -min_confidence 0.3 $$(go list -f '{{ .ImportPath }}' ./... | grep -v -e 'github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/client/mock')
+	$(DOCKER_CMD) hack/go-lint.sh -min_confidence 0.3 $$(go list -f '{{ .ImportPath }}' ./... | grep -v -e 'github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/client/mock')
 
 .PHONY: goimports
 goimports: ## Go fmt your code

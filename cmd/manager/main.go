@@ -22,13 +22,13 @@ import (
 
 	configv1 "github.com/openshift/api/config/v1"
 	machinev1 "github.com/openshift/api/machine/v1beta1"
-	ibmclient "github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/client"
-	"github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/machine"
-	machinesetcontroller "github.com/openshift/cluster-api-provider-ibmcloud/pkg/actuators/machineset"
-	"github.com/openshift/cluster-api-provider-ibmcloud/pkg/apis"
-	"github.com/openshift/cluster-api-provider-ibmcloud/pkg/version"
 	capimachine "github.com/openshift/machine-api-operator/pkg/controller/machine"
 	"github.com/openshift/machine-api-operator/pkg/metrics"
+	ibmclient "github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/client"
+	"github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/machine"
+	machinesetcontroller "github.com/openshift/machine-api-provider-ibmcloud/pkg/actuators/machineset"
+	"github.com/openshift/machine-api-provider-ibmcloud/pkg/apis"
+	"github.com/openshift/machine-api-provider-ibmcloud/pkg/version"
 	klog "k8s.io/klog/v2"
 	"k8s.io/klog/v2/klogr"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -100,7 +100,7 @@ func main() {
 	opts := manager.Options{
 		LeaderElection:          *leaderElect,
 		LeaderElectionNamespace: *leaderElectResourceNamespace,
-		LeaderElectionID:        "cluster-api-provider-ibmcloud-leader",
+		LeaderElectionID:        "machine-api-provider-ibmcloud-leader",
 		LeaseDuration:           leaderElectLeaseDuration,
 		HealthProbeBindAddress:  *healthAddr,
 		MetricsBindAddress:      *metricsAddress,
