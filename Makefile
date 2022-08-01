@@ -20,7 +20,8 @@ endif
 GOARCH  ?= $(shell go env GOARCH)
 GOOS    ?= $(shell go env GOOS)
 
-VERSION     ?= $(shell git describe --always --abbrev=7)
+# Get the version based off the closest tag and current commit or default the version to '0.0.0-<commit-hash{7}>' if no tags are valid/found
+VERSION     ?= $(shell git describe --abbrev=7 || echo 0.0.0-$$(git describe --always --abbrev=7))
 REPO_PATH   ?= github.com/openshift/machine-api-provider-ibmcloud
 LD_FLAGS    ?= -X $(REPO_PATH)/pkg/version.Raw=$(VERSION) -extldflags "-static"
 IMAGE        = origin-ibmcloud-machine-controllers
