@@ -23,6 +23,7 @@ import (
 	"github.com/IBM/platform-services-go-sdk/resourcemanagerv2"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 	"github.com/golang-jwt/jwt"
+	"github.com/openshift/machine-api-operator/pkg/controller/machine"
 	ibmcloudproviderv1 "github.com/openshift/machine-api-provider-ibmcloud/pkg/apis/ibmcloudprovider/v1"
 	"github.com/pkg/errors"
 )
@@ -43,6 +44,7 @@ type Client interface {
 	// Helper functions
 	GetAccountID() (string, error)
 	GetCustomImageByName(imageName string, resourceGroupID string) (string, error)
+	VerifyInstanceProfile(profile string) (string, error)
 	GetVPCIDByName(vpcName string, resourceGroupID string) (string, error)
 	GetResourceGroupIDByName(resourceGroupName string) (string, error)
 	GetSubnetIDbyName(subnetName string, resourceGroupID string) (string, error)
@@ -268,6 +270,12 @@ func (c *ibmCloudClient) InstanceCreate(machineName string, machineProviderConfi
 		return nil, err
 	}
 
+	// Verify Instance Profile
+	instanceProfile, err := c.VerifyInstanceProfile(machineProviderConfig.Profile)
+	if err != nil {
+		return nil, err
+	}
+
 	// Get VPC ID
 	vpcName := machineProviderConfig.VPC
 	vpcID, err := c.GetVPCIDByName(vpcName, resourceGroupID)
@@ -295,7 +303,7 @@ func (c *ibmCloudClient) InstanceCreate(machineName string, machineProviderConfi
 			ID: &imageID,
 		},
 		Profile: &vpcv1.InstanceProfileIdentity{
-			Name: &machineProviderConfig.Profile,
+			Name: &instanceProfile,
 		},
 		Zone: &vpcv1.ZoneIdentity{
 			Name: &machineProviderConfig.Zone,
@@ -398,6 +406,25 @@ func (c *ibmCloudClient) GetCustomImageByName(imageName string, resourceGroupID 
 	}
 
 	return "", fmt.Errorf("could not retrieve image id of name: %v", imageName)
+}
+
+// VerifyInstanceProfile verifies the provided instance profile exists
+func (c *ibmCloudClient) VerifyInstanceProfile(profileName string) (string, error) {
+	// Get list of instance profiles
+	instanceProfilesList, _, err := c.vpcService.ListInstanceProfiles(c.vpcService.NewListInstanceProfilesOptions())
+	if err != nil {
+		return "", err
+	}
+
+	if instanceProfilesList != nil {
+		for _, instanceProfile := range instanceProfilesList.Profiles {
+			if *instanceProfile.Name == profileName {
+				return profileName, nil
+			}
+		}
+		return "", machine.InvalidMachineConfiguration(fmt.Sprintf("could not find instance profile: %v", profileName))
+	}
+	return "", fmt.Errorf("no instance profiles found")
 }
 
 // GetResourceGroupIDByName retrives a Resource Group ID

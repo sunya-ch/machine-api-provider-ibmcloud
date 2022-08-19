@@ -228,3 +228,18 @@ func (mr *MockClientMockRecorder) InstanceGetProfile(profileName interface{}) *g
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InstanceGetProfile", reflect.TypeOf((*MockClient)(nil).InstanceGetProfile), profileName)
 }
+
+// VerifyInstanceProfile mocks base method.
+func (m *MockClient) VerifyInstanceProfile(profile string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyInstanceProfile", profile)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// VerifyInstanceProfile indicates an expected call of VerifyInstanceProfile.
+func (mr *MockClientMockRecorder) VerifyInstanceProfile(profile interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyInstanceProfile", reflect.TypeOf((*MockClient)(nil).VerifyInstanceProfile), profile)
+}
