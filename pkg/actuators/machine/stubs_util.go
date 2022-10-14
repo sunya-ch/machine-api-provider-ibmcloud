@@ -38,9 +38,11 @@ func stubInstanceGetByName(name string, machineProviderConfig *ibmcloudproviderv
 		Name: &returnName,
 		ID:   &returnID,
 		PrimaryNetworkInterface: &vpcv1.NetworkInterfaceInstanceContextReference{
-			ID:                 &returnPrimaryNetID,
-			Name:               &returnPrimaryNetName,
-			PrimaryIpv4Address: &returnPrimaryNetIPv4Add,
+			ID:   &returnPrimaryNetID,
+			Name: &returnPrimaryNetName,
+			PrimaryIP: &vpcv1.ReservedIPReference{
+				Address: &returnPrimaryNetIPv4Add,
+			},
 		},
 		Status: &returnRunning,
 	}, nil
