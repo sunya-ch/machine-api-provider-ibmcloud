@@ -296,6 +296,28 @@ func (c *ibmCloudClient) InstanceCreate(machineName string, machineProviderConfi
 		return nil, err
 	}
 
+	// Get NetworkInterfaces
+	networkInterfaces := []vpcv1.NetworkInterfacePrototype{}
+	for _, secondaryInterface := range machineProviderConfig.NetworkInterfaces {
+		secondarySubnetName := secondaryInterface.Subnet
+		secondarySubnetID, err := c.GetSubnetIDbyName(secondarySubnetName, resourceGroupID)
+		if err != nil {
+			return nil, err
+		}
+		secondarySecurityGroups, err := c.GetSecurityGroupsByName(secondaryInterface.SecurityGroups, resourceGroupID, vpcID)
+		if err != nil {
+			return nil, err
+		}
+		networkInterface := vpcv1.NetworkInterfacePrototype{
+			Subnet: &vpcv1.SubnetIdentity{
+				ID: &secondarySubnetID,
+			},
+			SecurityGroups:  secondarySecurityGroups,
+			AllowIPSpoofing: &secondaryInterface.AllowIPSpoofing,
+		}
+		networkInterfaces = append(networkInterfaces, networkInterface)
+	}
+
 	// Set Instance Prototype - Contains all the info necessary to provision an instance
 	instancePrototypeObj := &vpcv1.InstancePrototype{
 		Name: &machineName,
@@ -317,6 +339,7 @@ func (c *ibmCloudClient) InstanceCreate(machineName string, machineProviderConfi
 			},
 			SecurityGroups: securityGroups,
 		},
+		NetworkInterfaces: networkInterfaces,
 		VPC: &vpcv1.VPCIdentity{
 			ID: &vpcID,
 		},

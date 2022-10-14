@@ -179,10 +179,17 @@ func (r *Reconciler) reconcileMachineWithCloudState(conditionFailed *ibmcloudpro
 	}
 
 	// Update Machine Status Addresses
-	ipAddr := *newInstance.PrimaryNetworkInterface.PrimaryIpv4Address
+	ipAddr := *newInstance.PrimaryNetworkInterface.PrimaryIP.Address
+	networkInterfaces := newInstance.NetworkInterfaces
 	if ipAddr != "" {
 		networkAddresses := []apicorev1.NodeAddress{{Type: apicorev1.NodeInternalDNS, Address: r.machine.Name}}
 		networkAddresses = append(networkAddresses, apicorev1.NodeAddress{Type: apicorev1.NodeInternalIP, Address: ipAddr})
+		for _, secondaryInterface := range networkInterfaces {
+			ipAddr = *secondaryInterface.PrimaryIP.Address
+			if ipAddr != "" {
+				networkAddresses = append(networkAddresses, apicorev1.NodeAddress{Type: apicorev1.NodeInternalIP, Address: ipAddr})
+			}
+		}
 		r.machine.Status.Addresses = networkAddresses
 	} else {
 		return fmt.Errorf("could not get the primary ipv4 address of instance: %v", newInstance.Name)

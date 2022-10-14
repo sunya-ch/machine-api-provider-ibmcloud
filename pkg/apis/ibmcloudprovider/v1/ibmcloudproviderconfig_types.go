@@ -67,6 +67,9 @@ type IBMCloudMachineProviderSpec struct {
 	// PrimaryNetworkInterface is required to specify subnet
 	PrimaryNetworkInterface NetworkInterface `json:"primaryNetworkInterface"`
 
+	// Collection of additional network interfaces to create for the virtual server instance.
+	NetworkInterfaces []NetworkInterface `json:"networkInterfaces,omitempty"`
+
 	// SSHKeys is the SSH pub keys that will be used to access virtual service instance
 	// SSHKeys []*string `json:"sshKeys,omitempty"`
 
@@ -79,8 +82,13 @@ type IBMCloudMachineProviderSpec struct {
 
 // NetworkInterface struct
 type NetworkInterface struct {
+	// Indicates whether source IP spoofing is allowed on this interface. If false, source IP spoofing is prevented on this
+	// interface. If true, source IP spoofing is allowed on this interface.
+	AllowIPSpoofing bool `json:"allowIPSpoofing,omitempty"`
+
 	// Subnet name of the network interface
 	Subnet string `json:"subnet"`
+
 	// SecurityGroups holds a list of security group names
 	SecurityGroups []string `json:"securityGroups"`
 }
